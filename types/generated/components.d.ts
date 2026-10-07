@@ -9,6 +9,25 @@ export interface SharedMedia extends Struct.ComponentSchema {
   attributes: {};
 }
 
+export interface SharedOrderItems extends Struct.ComponentSchema {
+  collectionName: 'components_shared_order_items';
+  info: {
+    displayName: 'Order Items';
+  };
+  attributes: {
+    cover: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    productId: Schema.Attribute.Integer & Schema.Attribute.Required;
+    quantity: Schema.Attribute.Integer & Schema.Attribute.Required;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    totalPrice: Schema.Attribute.BigInteger & Schema.Attribute.Required;
+    type: Schema.Attribute.Enumeration<['FISICO', 'DIGITAL']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'FISICO'>;
+    unitPrice: Schema.Attribute.BigInteger & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedQuote extends Struct.ComponentSchema {
   collectionName: 'components_shared_quotes';
   info: {
@@ -64,6 +83,7 @@ declare module '@strapi/strapi' {
   export namespace Public {
     export interface ComponentSchemas {
       'shared.media': SharedMedia;
+      'shared.order-items': SharedOrderItems;
       'shared.quote': SharedQuote;
       'shared.rich-text': SharedRichText;
       'shared.seo': SharedSeo;

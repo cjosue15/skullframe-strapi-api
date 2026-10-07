@@ -1,0 +1,46 @@
+{
+  "collectionName": "components_shared_order_items",
+  "info": {
+    "displayName": "Order Items"
+  },
+  "options": {},
+  "attributes": {
+    "productId": {
+      "type": "integer",
+      "required": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "required": true,
+      "default": "FISICO",
+      "enum": [
+        "FISICO",
+        "DIGITAL"
+      ]
+    },
+    "slug": {
+      "type": "string",
+      "required": true
+    },
+    "quantity": {
+      "type": "integer",
+      "required": true
+    },
+    "unitPrice": {
+      "type": "biginteger",
+      "required": true
+    },
+    "totalPrice": {
+      "type": "biginteger",
+      "required": true
+    },
+    "cover": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}
