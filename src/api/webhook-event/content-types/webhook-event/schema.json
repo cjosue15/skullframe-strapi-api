@@ -1,0 +1,71 @@
+{
+  "kind": "collectionType",
+  "collectionName": "webhook_events",
+  "info": {
+    "singularName": "webhook-event",
+    "pluralName": "webhook-events",
+    "displayName": "Webhook Event"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "providerOrderId": {
+      "type": "string",
+      "required": true
+    },
+    "requestId": {
+      "type": "string",
+      "required": true
+    },
+    "eventAction": {
+      "type": "string"
+    },
+    "processingStatus": {
+      "type": "enumeration",
+      "required": true,
+      "default": "PENDING",
+      "enum": [
+        "PENDING",
+        "PROCESSING",
+        "PROCESSED",
+        "FAILED",
+        "DISCARDED"
+      ]
+    },
+    "attempts": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "min": 0
+    },
+    "nextRetryAt": {
+      "type": "datetime"
+    },
+    "processedAt": {
+      "type": "datetime"
+    },
+    "processingToken": {
+      "type": "string",
+      "private": true
+    },
+    "lockedUntil": {
+      "type": "datetime"
+    },
+    "externalReference": {
+      "type": "string"
+    },
+    "order": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::order.order"
+    },
+    "reasonCode": {
+      "type": "string"
+    },
+    "auditDetails": {
+      "type": "json"
+    }
+  }
+}

@@ -517,7 +517,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    checkout_url: Schema.Attribute.String;
+    checkoutUrl: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -528,7 +528,9 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'0'>;
     email: Schema.Attribute.Email & Schema.Attribute.Required;
-    idempotencyKey: Schema.Attribute.String & Schema.Attribute.Required;
+    idempotencyKey: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     items: Schema.Attribute.Component<'shared.order-items', true> &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
@@ -555,6 +557,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
         'APPROVED',
         'REJECTED',
         'CANCELLED',
+        'PARTIALLY_REFUNDED',
         'REFUNDED',
         'CHARGED_BACK',
       ]
@@ -562,6 +565,8 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'PENDING'>;
     providerOrderId: Schema.Attribute.String;
+    providerStatus: Schema.Attribute.String;
+    providerStatusDetail: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     subtotalAmount: Schema.Attribute.BigInteger & Schema.Attribute.Required;
     totalAmount: Schema.Attribute.BigInteger & Schema.Attribute.Required;
@@ -611,6 +616,59 @@ export interface ApiProductoProducto extends Struct.CollectionTypeSchema {
     type: Schema.Attribute.Enumeration<['FISICO', 'DIGITAL']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'FISICO'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiWebhookEventWebhookEvent
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'webhook_events';
+  info: {
+    displayName: 'Webhook Event';
+    pluralName: 'webhook-events';
+    singularName: 'webhook-event';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    attempts: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    auditDetails: Schema.Attribute.JSON;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    eventAction: Schema.Attribute.String;
+    externalReference: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::webhook-event.webhook-event'
+    > &
+      Schema.Attribute.Private;
+    lockedUntil: Schema.Attribute.DateTime;
+    nextRetryAt: Schema.Attribute.DateTime;
+    order: Schema.Attribute.Relation<'manyToOne', 'api::order.order'>;
+    processedAt: Schema.Attribute.DateTime;
+    processingStatus: Schema.Attribute.Enumeration<
+      ['PENDING', 'PROCESSING', 'PROCESSED', 'FAILED', 'DISCARDED']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'PENDING'>;
+    processingToken: Schema.Attribute.String & Schema.Attribute.Private;
+    providerOrderId: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    reasonCode: Schema.Attribute.String;
+    requestId: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1132,6 +1190,7 @@ declare module '@strapi/strapi' {
       'api::global.global': ApiGlobalGlobal;
       'api::order.order': ApiOrderOrder;
       'api::producto.producto': ApiProductoProducto;
+      'api::webhook-event.webhook-event': ApiWebhookEventWebhookEvent;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
